@@ -176,6 +176,52 @@
     letter-spacing: 0.08em;
   }
 
+  .gallery { margin-top: 32px; }
+  .gallery h2 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #ffd521;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  .gallery-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+  .gallery-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 10px;
+    width: 80px;
+    border: 1.5px solid #3d3420;
+    border-radius: 12px;
+    background: #221c0f;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.15s ease;
+  }
+  .gallery-item:hover {
+    border-color: #ffd521;
+    background: rgba(255, 213, 33, 0.04);
+    transform: translateY(-1px);
+  }
+  .gallery-item img {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    background: #fff;
+  }
+  .gallery-item span {
+    font-size: 0.68rem;
+    color: #7a6b4e;
+  }
+
   button {
     width: 100%;
     padding: 12px;
@@ -248,6 +294,15 @@
   </div>
 
   <button id="downloadBtn" disabled>Download</button>
+
+  <div class="gallery">
+    <h2>Examples</h2>
+    <div class="gallery-grid">
+      <a class="gallery-item" href="examples/old-man-yells-at-claude.png" download="old-man-yells-at-claude.png"><img src="examples/old-man-yells-at-claude.png" alt="Old man yells at Claude - Slack emoji" loading="lazy" width="48" height="48"><span>:claude:</span></a>
+      <a class="gallery-item" href="examples/old-man-yells-at-github.png" download="old-man-yells-at-github.png"><img src="examples/old-man-yells-at-github.png" alt="Old man yells at GitHub - Slack emoji" loading="lazy" width="48" height="48"><span>:github:</span></a>
+      <a class="gallery-item" href="examples/old-man-yells-at-microsoft.png" download="old-man-yells-at-microsoft.png"><img src="examples/old-man-yells-at-microsoft.png" alt="Old man yells at Microsoft - Slack emoji" loading="lazy" width="48" height="48"><span>:microsoft:</span></a>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -365,6 +420,8 @@
       URL.revokeObjectURL(a.href);
     }, 'image/png');
   });
+
+
 </script>
 </body>
 </html>
