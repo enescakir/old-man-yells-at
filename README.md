@@ -1,6 +1,6 @@
 # Old Man Yells At \<X\>
 
-Generate custom "Old Man Yells At" Slack emoji. Upload a logo, get a 128x128 PNG with Grandpa Simpson yelling at it.
+Generate custom "Old Man Yells At" Slack emoji. Upload a logo, get a 128x128 PNG with the old man yelling at it.
 
 ## Usage
 
@@ -23,4 +23,4 @@ Generate custom "Old Man Yells At" Slack emoji. Upload a logo, get a 128x128 PNG
 ## Files
 
 - `index.html` — the entire app (HTML + CSS + JS, no dependencies)
-- `old-man-yells-at.png` — the Grandpa Simpson template image
+- `old-man-yells-at.png` — the old man yelling template image
