@@ -150,7 +150,7 @@
   <p class="subtitle">Generate custom Slack emoji with the old man yelling meme</p>
 
   <div class="drop-zone" id="dropZone">
-    <p>Drop an image here or click to upload</p>
+    <p>Drop, paste, or click to upload an image</p>
     <input type="file" id="fileInput" accept="image/*">
   </div>
 
@@ -250,6 +250,12 @@
     e.preventDefault();
     dropZone.classList.remove('dragover');
     if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+  });
+
+  // Paste from clipboard
+  document.addEventListener('paste', (e) => {
+    const file = [...(e.clipboardData?.files || [])].find(f => f.type.startsWith('image/'));
+    if (file) handleFile(file);
   });
 
   downloadBtn.addEventListener('click', () => {
