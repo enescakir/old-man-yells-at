@@ -87,6 +87,68 @@
   .field input[type="text"]:focus { border-color: #ffd521; }
   .field .hint { font-size: 0.72rem; color: #5a4d36; margin-top: 6px; }
 
+  .sliders { margin-bottom: 20px; display: none; }
+  .sliders.visible { display: block; }
+  .slider-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .slider-row label {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: #7a6b4e;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    width: 32px;
+    flex-shrink: 0;
+  }
+  .slider-row input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    flex: 1;
+    height: 3px;
+    background: #3d3420;
+    border-radius: 2px;
+    outline: none;
+  }
+  .slider-row input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #ffd521;
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+    transition: transform 0.15s ease;
+  }
+  .slider-row input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+  }
+  .slider-row input[type="range"]::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border: none;
+    border-radius: 50%;
+    background: #ffd521;
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  }
+  .slider-row input[type="range"]::-moz-range-track {
+    height: 3px;
+    background: #3d3420;
+    border-radius: 2px;
+    border: none;
+  }
+  .slider-row .slider-val {
+    font-size: 0.72rem;
+    color: #5a4d36;
+    width: 28px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
   .preview-area {
     display: flex;
     justify-content: center;
@@ -167,6 +229,24 @@
     </div>
   </div>
 
+  <div class="sliders" id="sliders">
+    <div class="slider-row">
+      <label for="sizeSlider">Size</label>
+      <input type="range" id="sizeSlider" min="16" max="100" value="50">
+      <span class="slider-val" id="sizeVal">50</span>
+    </div>
+    <div class="slider-row">
+      <label for="xSlider">X</label>
+      <input type="range" id="xSlider" min="0" max="100" value="3">
+      <span class="slider-val" id="xVal">3</span>
+    </div>
+    <div class="slider-row">
+      <label for="ySlider">Y</label>
+      <input type="range" id="ySlider" min="0" max="100" value="3">
+      <span class="slider-val" id="yVal">3</span>
+    </div>
+  </div>
+
   <button id="downloadBtn" disabled>Download</button>
 </div>
 
@@ -179,6 +259,13 @@
   const nameInput = document.getElementById('nameInput');
   const previewWrapper = document.querySelector('.preview-wrapper');
   const downloadBtn = document.getElementById('downloadBtn');
+  const slidersDiv = document.getElementById('sliders');
+  const sizeSlider = document.getElementById('sizeSlider');
+  const xSlider = document.getElementById('xSlider');
+  const ySlider = document.getElementById('ySlider');
+  const sizeVal = document.getElementById('sizeVal');
+  const xVal = document.getElementById('xVal');
+  const yVal = document.getElementById('yVal');
 
   let templateImg = null;
   let userImg = null;
@@ -194,11 +281,11 @@
     previewWrapper.classList.add('shake');
   }
 
-  function draw() {
+  function draw(doShake) {
     ctx.clearRect(0, 0, SIZE, SIZE);
     if (userImg) {
       drawUserImage();
-      shake();
+      if (doShake) shake();
     }
     if (templateImg) {
       ctx.drawImage(templateImg, 0, 0, SIZE, SIZE);
@@ -207,9 +294,9 @@
   }
 
   function drawUserImage() {
-    const logoSize = 50;
-    const x = 3;
-    const y = 3;
+    const logoSize = +sizeSlider.value;
+    const x = +xSlider.value;
+    const y = +ySlider.value;
 
     const aspect = userImg.width / userImg.height;
     let w, h;
@@ -225,12 +312,21 @@
     ctx.drawImage(userImg, dx, dy, w, h);
   }
 
+  [sizeSlider, xSlider, ySlider].forEach(s => {
+    s.addEventListener('input', () => {
+      sizeVal.textContent = sizeSlider.value;
+      xVal.textContent = xSlider.value;
+      yVal.textContent = ySlider.value;
+      draw();
+    });
+  });
+
   function handleFile(file) {
     if (!file || !file.type.startsWith('image/')) return;
     const reader = new FileReader();
     reader.onload = (e) => {
       const img = new Image();
-      img.onload = () => { userImg = img; draw(); };
+      img.onload = () => { userImg = img; slidersDiv.classList.add('visible'); draw(true); };
       img.src = e.target.result;
     };
     reader.readAsDataURL(file);
