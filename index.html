@@ -130,6 +130,18 @@
   button:disabled { opacity: 0.3; cursor: not-allowed; }
   button:not(:disabled):hover { background: #ffe04a; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(255, 213, 33, 0.3); }
   button:not(:disabled):active { transform: translateY(0); }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10% { transform: translateX(-6px) rotate(-2deg); }
+    30% { transform: translateX(5px) rotate(1.5deg); }
+    50% { transform: translateX(-4px) rotate(-1deg); }
+    70% { transform: translateX(3px) rotate(0.5deg); }
+    90% { transform: translateX(-1px); }
+  }
+  .preview-wrapper.shake {
+    animation: shake 0.5s ease;
+  }
 </style>
 </head>
 <body>
@@ -165,6 +177,7 @@
   const dropZone = document.getElementById('dropZone');
   const fileInput = document.getElementById('fileInput');
   const nameInput = document.getElementById('nameInput');
+  const previewWrapper = document.querySelector('.preview-wrapper');
   const downloadBtn = document.getElementById('downloadBtn');
 
   let templateImg = null;
@@ -175,10 +188,17 @@
   tpl.onload = () => { templateImg = tpl; draw(); };
   tpl.src = 'old-man-yells-at.png';
 
+  function shake() {
+    previewWrapper.classList.remove('shake');
+    void previewWrapper.offsetWidth; // reflow to restart animation
+    previewWrapper.classList.add('shake');
+  }
+
   function draw() {
     ctx.clearRect(0, 0, SIZE, SIZE);
     if (userImg) {
       drawUserImage();
+      shake();
     }
     if (templateImg) {
       ctx.drawImage(templateImg, 0, 0, SIZE, SIZE);
@@ -233,6 +253,7 @@
   });
 
   downloadBtn.addEventListener('click', () => {
+    shake();
     const name = nameInput.value.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-') || 'x';
     canvas.toBlob((blob) => {
       const a = document.createElement('a');
