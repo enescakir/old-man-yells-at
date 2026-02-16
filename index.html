@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Old Man Yells At - Slack Emoji Meme Generator</title>
+<meta name="description" content="Generate 'Old Man Yells At' Slack emoji memes. Upload any logo, composite it with the classic Grandpa Simpson yelling template, and download a 128x128 PNG ready for Slack.">
+<meta name="keywords" content="old man yells at, slack emoji generator, meme generator, grandpa simpson, custom slack emoji">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #0f0f0f;
+    color: #e0e0e0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+  }
+  .container {
+    max-width: 400px;
+    width: 100%;
+  }
+  h1 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+    text-align: center;
+    letter-spacing: -0.03em;
+  }
+  h1 span { color: #ff4d4d; }
+  .subtitle {
+    text-align: center;
+    color: #555;
+    font-size: 0.85rem;
+    margin-bottom: 32px;
+  }
+
+  .drop-zone {
+    border: 1.5px dashed #333;
+    border-radius: 16px;
+    padding: 28px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: 20px;
+    background: #181818;
+  }
+  .drop-zone:hover, .drop-zone.dragover {
+    border-color: #ff4d4d;
+    background: rgba(255, 77, 77, 0.04);
+  }
+  .drop-zone p { color: #666; font-size: 0.85rem; }
+  .drop-zone input { display: none; }
+
+  .field { margin-bottom: 20px; }
+  .field label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #666;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .field input[type="text"] {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid #222;
+    border-radius: 10px;
+    background: #181818;
+    color: #e0e0e0;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+  .field input[type="text"]::placeholder { color: #444; }
+  .field input[type="text"]:focus { border-color: #ff4d4d; }
+  .field .hint { font-size: 0.72rem; color: #444; margin-top: 6px; }
+
+  .preview-area {
+    display: flex;
+    justify-content: center;
+    margin: 28px 0;
+  }
+  .preview-area canvas {
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  }
+
+  button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background: #ff4d4d;
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    letter-spacing: 0.01em;
+  }
+  button:disabled { opacity: 0.3; cursor: not-allowed; }
+  button:not(:disabled):hover { background: #ff3333; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(255, 77, 77, 0.3); }
+  button:not(:disabled):active { transform: translateY(0); }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Old Man Yells At <span>&lt;X&gt;</span></h1>
+  <p class="subtitle">Generate custom Slack emoji with Grandpa Simpson</p>
+
+  <div class="drop-zone" id="dropZone">
+    <p>Drop an image here or click to upload</p>
+    <input type="file" id="fileInput" accept="image/*">
+  </div>
+
+  <div class="field">
+    <label for="nameInput">Name</label>
+    <input type="text" id="nameInput" placeholder="e.g. github">
+    <div class="hint">old-man-yells-at-&lt;name&gt;.png</div>
+  </div>
+
+  <div class="preview-area">
+    <canvas id="canvas" width="128" height="128" style="width:128px;height:128px;"></canvas>
+  </div>
+
+  <button id="downloadBtn" disabled>Download</button>
+</div>
+
+<script>
+  const SIZE = 128;
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+  const dropZone = document.getElementById('dropZone');
+  const fileInput = document.getElementById('fileInput');
+  const nameInput = document.getElementById('nameInput');
+  const downloadBtn = document.getElementById('downloadBtn');
+
+  let templateImg = null;
+  let userImg = null;
+
+  // Load the old man template
+  const tpl = new Image();
+  tpl.onload = () => { templateImg = tpl; draw(); };
+  tpl.src = 'old-man-yells-at.png';
+
+  function draw() {
+    ctx.clearRect(0, 0, SIZE, SIZE);
+    if (userImg) {
+      drawUserImage();
+    }
+    if (templateImg) {
+      ctx.drawImage(templateImg, 0, 0, SIZE, SIZE);
+    }
+    downloadBtn.disabled = !userImg;
+  }
+
+  function drawUserImage() {
+    const logoSize = 50;
+    const x = 3;
+    const y = 3;
+
+    const aspect = userImg.width / userImg.height;
+    let w, h;
+    if (aspect >= 1) {
+      w = logoSize;
+      h = logoSize / aspect;
+    } else {
+      h = logoSize;
+      w = logoSize * aspect;
+    }
+    const dx = x + (logoSize - w) / 2;
+    const dy = y + (logoSize - h) / 2;
+    ctx.drawImage(userImg, dx, dy, w, h);
+  }
+
+  function handleFile(file) {
+    if (!file || !file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => { userImg = img; draw(); };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+
+    if (!nameInput.value) {
+      const name = file.name.replace(/\.[^.]+$/, '').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      nameInput.value = name;
+    }
+  }
+
+  dropZone.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleFile(fileInput.files[0]); });
+
+  dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+  });
+
+  downloadBtn.addEventListener('click', () => {
+    const name = nameInput.value.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-') || 'x';
+    canvas.toBlob((blob) => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `old-man-yells-at-${name}.png`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }, 'image/png');
+  });
+</script>
+</body>
+</html>
